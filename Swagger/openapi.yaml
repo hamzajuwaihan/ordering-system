@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: Ordering System
+  version: 1.0.0
+  description: This is an ordering system based on OAS 3.0.0
+servers:
+  - url: http://localhost:3000/
+paths:
+  /orders:
+    post:
+      summary: Place an order
+      description: Endpoint to place an order for products
+      operationId: placeOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                  description: ID of the product to order
+                quantity:
+                  type: integer
+                  description: Quantity of the product to order
+            examples:
+              sampleOrder:
+                value:
+                  product_id: 2
+                  quantity: 1
+      responses:
+        '200':
+          description: Order placed successfully
+          content:
+            application/json:
+              examples:
+                successOrder:
+                  value:
+                    id: 12
+                    product_id: 2
+                    quantity: 1
+        '400':
+          description: bad request to server
+          content:
+            application/json:
+              examples:
+                bad-order-request:
+                  value: '{"message": "bad request"}'
+        '500':
+          description: server error
+          content:
+            application/json:
+              examples:
+                server-error:
+                  value: '{"message": "Internal server error"}'
+      tags:
+        - Orders
