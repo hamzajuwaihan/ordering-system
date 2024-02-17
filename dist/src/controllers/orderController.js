@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addNewOrder = void 0;
 const Order_1 = __importDefault(require("../models/Order"));
 const Stock_1 = __importDefault(require("../models/Stock"));
+const Email_1 = __importDefault(require("../models/Email"));
 const addNewOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     const newOrder = new Order_1.default(req.body);
@@ -54,4 +55,17 @@ const addNewOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.addNewOrder = addNewOrder;
+// Listen for low stock event
+Stock_1.default.eventEmitter.on("lowStock", (lowStockIngredients) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Send email notification
+        yield Email_1.default.sendAlertEmails(lowStockIngredients);
+        // Update flags or perform any other necessary actions
+        yield Email_1.default.updateIngredientAlertFlags(lowStockIngredients);
+    }
+    catch (error) {
+        console.error(`Error occurred while handling low stock event: ${error}`);
+        // Handle error
+    }
+}));
 //# sourceMappingURL=orderController.js.map

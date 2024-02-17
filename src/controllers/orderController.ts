@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Order from "../models/Order";
 import Stock from "../models/Stock";
+import Email from "../models/Email";
 
 export const addNewOrder = async (
   req: Request,
@@ -56,3 +57,16 @@ export const addNewOrder = async (
     return res.status(500).send("Internal Server Error");
   }
 };
+
+// Listen for low stock event
+Stock.eventEmitter.on("lowStock", async (lowStockIngredients: number[]) => {
+  try {
+    // Send email notification
+    await Email.sendAlertEmails(lowStockIngredients);
+    // Update flags or perform any other necessary actions
+    await Email.updateIngredientAlertFlags(lowStockIngredients);
+  } catch (error) {
+    console.error(`Error occurred while handling low stock event: ${error}`);
+    // Handle error
+  }
+});

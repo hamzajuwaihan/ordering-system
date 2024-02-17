@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import executeQuery from "../db";
 import Email from "./Email";
 import Ingredient from "./Ingredient";
@@ -17,6 +18,8 @@ interface StockFillHistoryData {
 }
 
 class Stock {
+  static eventEmitter = new EventEmitter();
+
   // Method to retrieve the stock levels of multiple ingredients
   static async getStock(ingredientIds: number[]): Promise<Map<number, number>> {
     // Construct a SQL query with a WHERE clause to retrieve the stock levels for the specified ingredient IDs
@@ -118,7 +121,8 @@ class Stock {
       const lowStockIngredients = await this.getLowStockIngredients(
         ingredientIds
       );
-      console.log("Low stock ingredients:", lowStockIngredients);
+
+      
       // Filter low-stock ingredients that haven't been notified yet
       const notNotifiedLowStockIngredients = await this.filterNotNotified(
         lowStockIngredients
@@ -132,10 +136,13 @@ class Stock {
         console.log(
           `Low stock ingredients: ${notNotifiedLowStockIngredients.join(", ")}`
         );
-        await Email.sendAlertEmails(notNotifiedLowStockIngredients);
+        
+        this.eventEmitter.emit('lowStock', lowStockIngredients);
 
-        // Update the is_sent flag for notified ingredients
-        await Email.updateIngredientAlertFlags(notNotifiedLowStockIngredients);
+        // await Email.sendAlertEmails(notNotifiedLowStockIngredients);
+
+        // // Update the is_sent flag for notified ingredients
+        // await Email.updateIngredientAlertFlags(notNotifiedLowStockIngredients);
 
         return true; // Alert sent
       }
@@ -221,6 +228,20 @@ class Stock {
 
     return notNotifiedLowStockIngredients;
   }
+
+  // Method to reset the stock levels of all ingredients
+
+  static async resetStock(): Promise<void> {
+    const query = "UPDATE stock SET amount = 10000.00";
+
+    try {
+      await executeQuery(query);
+    } catch (error) {
+      console.error(`Error occurred while resetting stock levels: ${error}`);
+      throw error;
+    }
+  }
 }
+
 
 export default Stock;

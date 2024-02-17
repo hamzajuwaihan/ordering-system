@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const events_1 = __importDefault(require("events"));
 const db_1 = __importDefault(require("../db"));
 const Email_1 = __importDefault(require("./Email"));
 const Ingredient_1 = __importDefault(require("./Ingredient"));
@@ -101,16 +102,16 @@ class Stock {
                 const ingredientIds = yield Ingredient_1.default.ingredientsExtractId(ingredients);
                 // Get low-stock ingredients
                 const lowStockIngredients = yield this.getLowStockIngredients(ingredientIds);
-                console.log("Low stock ingredients:", lowStockIngredients);
                 // Filter low-stock ingredients that haven't been notified yet
                 const notNotifiedLowStockIngredients = yield this.filterNotNotified(lowStockIngredients);
                 console.log("Not notified low stock ingredients:", notNotifiedLowStockIngredients);
                 // Send email for the ingredients that haven't been notified
                 if (notNotifiedLowStockIngredients.length > 0) {
                     console.log(`Low stock ingredients: ${notNotifiedLowStockIngredients.join(", ")}`);
-                    yield Email_1.default.sendAlertEmails(notNotifiedLowStockIngredients);
-                    // Update the is_sent flag for notified ingredients
-                    yield Email_1.default.updateIngredientAlertFlags(notNotifiedLowStockIngredients);
+                    this.eventEmitter.emit('lowStock', lowStockIngredients);
+                    // await Email.sendAlertEmails(notNotifiedLowStockIngredients);
+                    // // Update the is_sent flag for notified ingredients
+                    // await Email.updateIngredientAlertFlags(notNotifiedLowStockIngredients);
                     return true; // Alert sent
                 }
                 return false; // No need for alert
@@ -180,6 +181,20 @@ class Stock {
             return notNotifiedLowStockIngredients;
         });
     }
+    // Method to reset the stock levels of all ingredients
+    static resetStock() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = "UPDATE stock SET amount = 10000.00";
+            try {
+                yield (0, db_1.default)(query);
+            }
+            catch (error) {
+                console.error(`Error occurred while resetting stock levels: ${error}`);
+                throw error;
+            }
+        });
+    }
 }
+Stock.eventEmitter = new events_1.default();
 exports.default = Stock;
 //# sourceMappingURL=Stock.js.map

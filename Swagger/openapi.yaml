@@ -69,9 +69,9 @@ paths:
                   id: 129
                   order_items:
                     - product_id: 1
-                      quantity: "2"
+                      quantity: '2'
                     - product_id: 1
-                      quantity: "2"
+                      quantity: '2'
         '400':
           description: Bad request to server
           content:
@@ -88,13 +88,6 @@ paths:
                 missing-products:
                   value:
                     error: Invalid request products array is missing
-        '500':
-          description: server error
-          content:
-            application/json:
-              examples:
-                server-error:
-                  value: '{"message": "Internal server error"}'
         '404':
           description: Ingredients not available
           content:
@@ -108,5 +101,33 @@ paths:
                 no-ingredients:
                   value:
                     error: Ingredients not available to fulfill order
+        '500':
+          description: server error
+          content:
+            application/json:
+              examples:
+                server-error:
+                  value: '{"message": "Internal server error"}'
+      tags:
+        - Orders
+  /api/reset:
+    summary: This will reset inventory to 10000.00
+    description: You may want further testing without modifying the values from DB.
+    post:
+      summary: Post Operation that restock the ingredients with 10000.00
+      description: >-
+        should be empty and for testing purposes only so it is not a valid
+        approach.
+      operationId: reset-stock
+      responses:
+        '200':
+          description: stock is 10000.00 now.
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                response of reset:
+                  value: Resetting the system
+        default:
+          description: Default error sample response
       tags:
         - Orders
