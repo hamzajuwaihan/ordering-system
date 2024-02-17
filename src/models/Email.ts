@@ -82,6 +82,17 @@ class Email {
       throw error;
     }
   }
+  static async resetIngredientAlertFlags(): Promise<void> {
+    try {
+      const query = "UPDATE ingredient_alert_flag SET is_sent = false";
+      await executeQuery(query);
+    } catch (error) {
+      console.error(
+        `Error occurred while resetting ingredient alert flags: ${error}`
+      );
+      throw error;
+    }
+  }
 }
 
 export default Email;

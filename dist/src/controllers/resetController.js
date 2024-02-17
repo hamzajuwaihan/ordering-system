@@ -14,9 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reset = void 0;
 const Stock_1 = __importDefault(require("../models/Stock"));
+const Email_1 = __importDefault(require("../models/Email"));
 // Method to reset the stock levels of all ingredients, this is for testing purposes so you dont have to edit DB manually.
 const reset = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    Stock_1.default.resetStock();
+    yield Stock_1.default.resetStock();
+    yield Email_1.default.resetIngredientAlertFlags();
     res.status(200).send("Resetting the system");
 });
 exports.reset = reset;

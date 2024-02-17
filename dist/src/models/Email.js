@@ -82,6 +82,18 @@ class Email {
             }
         });
     }
+    static resetIngredientAlertFlags() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const query = "UPDATE ingredient_alert_flag SET is_sent = false";
+                yield (0, db_1.default)(query);
+            }
+            catch (error) {
+                console.error(`Error occurred while resetting ingredient alert flags: ${error}`);
+                throw error;
+            }
+        });
+    }
 }
 exports.default = Email;
 //# sourceMappingURL=Email.js.map

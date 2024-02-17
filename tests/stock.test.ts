@@ -1,3 +1,13 @@
+/*
+This is not implemented correctly and will fail. I tried my best to implement the test but with no luck.
+
+Hopefully, I can learn TDD with servers and databases in the future.
+
+I tested manually and it works as expected.
+
+*/
+
+
 jest.mock("../src/db", () => ({ executeQuery: jest.fn() }));
 
 import Stock from "../src/models/Stock";

@@ -66,11 +66,11 @@ An alert will be sent according to the below:
 1. In the DB a stock table and *stock_fill_history* table, *stock_fill_history*.total_after_fill_amount column will be our reference assuming that it will be the filled amount.
 2. Each Ingredient in *Stock* table has two columns, amount which is the current amount and last_fill_operation.
 3. Compare the current amount to THRESHOLD **(configured in app.config.js)** × total_after_fill_amount.
-4. if the current amount below THRESHOLD, this will trigger our email.
+4. if the current amount below THRESHOLD, we will check ingredient_alert_flag, if it was true, no action needed else it will trigger an email.
 
 DB Structure:
 
-![DB diagram](./DB%20kickOff/DB%20structure.png "DB structure, ER").
+![DB diagram](./DB%20kickOff/DB%20structure.png "DB structure, ER")
 
 DB to restore: [DB to restore in PostgreSQL](./DB%20kickOff/db%20start.sql)
 
