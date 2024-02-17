@@ -1,0 +1,13 @@
+
+PORT= 3000
+DB_HOST= localhost
+DB_USER= default user for postgres: postgres
+DB_PASS= default pass for postgres: postgres
+DB_NAME=ordering-system-db
+DB_PORT=5432
+
+EMAIL_PASSWORD=
+EMAIL_USER=
+EMAIL_SERVICE= example: gmail
+EMAIL_HOST= example: smtp.gmail.com
+EMAIL_RECIEVER = example: test@gmail.com

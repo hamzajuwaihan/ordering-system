@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:3000/
 paths:
-  /orders:
+  /api/order:
     post:
       summary: Place an order
       description: Endpoint to place an order for products
@@ -18,35 +18,76 @@ paths:
             schema:
               type: object
               properties:
-                product_id:
-                  type: integer
-                  description: ID of the product to order
-                quantity:
-                  type: integer
-                  description: Quantity of the product to order
-            examples:
-              sampleOrder:
-                value:
-                  product_id: 2
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: integer
+                        description: ID of the product to order
+                      quantity:
+                        type: integer
+                        description: Quantity of the product to order
+            example:
+              products:
+                - product_id: 1
+                  quantity: 2
+                - product_id: 2
                   quantity: 1
       responses:
-        '200':
-          description: Order placed successfully
+        '201':
+          description: Order added successfully
           content:
             application/json:
-              examples:
-                successOrder:
-                  value:
-                    id: 12
-                    product_id: 2
-                    quantity: 1
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message
+                  order:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the order
+                      order_items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: integer
+                              description: The ID of the product
+                            quantity:
+                              type: string
+                              description: The quantity of the product
+              example:
+                message: Order added successfully
+                order:
+                  id: 129
+                  order_items:
+                    - product_id: 1
+                      quantity: "2"
+                    - product_id: 1
+                      quantity: "2"
         '400':
-          description: bad request to server
+          description: Bad request to server
           content:
             application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
               examples:
-                bad-order-request:
-                  value: '{"message": "bad request"}'
+                invalid-product:
+                  value:
+                    error: Invalid product in request payload
+                missing-products:
+                  value:
+                    error: Invalid request products array is missing
         '500':
           description: server error
           content:
@@ -54,5 +95,18 @@ paths:
               examples:
                 server-error:
                   value: '{"message": "Internal server error"}'
+        '404':
+          description: Ingredients not available
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                no-ingredients:
+                  value:
+                    error: Ingredients not available to fulfill order
       tags:
         - Orders
