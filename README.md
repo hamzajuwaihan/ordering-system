@@ -105,7 +105,7 @@ To run this project, you need to have the following software installed on your m
 4. In case of using docker fill "docker-compose.yml" file with needed info, then the below command and thats it.
 
    ```bash
-   docker-compose up
+   docker-compose up --build
 
 5. In case you dont want to use docker, you should either restore the DB (already provided in DB kickOff) in postgreSQL or create a DB with "ordering-system-db" and run the scripts in order in [create and insert SQL scripts](./docker-entrypoint-initdb.d/).
 
